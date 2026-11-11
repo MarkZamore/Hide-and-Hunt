@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.jpg binary
+config/log4j2.xml -text
+notices/*.txt -text
+notices/Directories-MPL-2.0.txt whitespace=-blank-at-eol

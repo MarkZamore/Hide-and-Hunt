@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "minecraftVersion": "26.3",
+  "loader": {
+    "type": "fabric",
+    "version": "0.20.1"
+  },
+  "javaMajorVersion": 25
+}

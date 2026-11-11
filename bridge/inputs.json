@@ -1,0 +1,38 @@
+{
+  "minecraft": {
+    "version": "26.3",
+    "sha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d"
+  },
+  "upstream": {
+    "sha256": "33a9d4215dcc151739df622870cce98135c3126d1db2ecf248d4a7baa0f78db7",
+    "entry": "META-INF/jars/HideAndHunt-Fabric-1.0.0-beta.2+26.3.jar",
+    "entrySha256": "d553666404b8ff17b0bd9a9f6d3824020660498a9ecb973dd772f668bc557eab",
+    "relayEntry": "META-INF/jars/e4mc-fabric-6.2.3-modern.jar",
+    "relayEntrySha256": "50125e336c383688403e2fb24c5d88af82cd4b64288359ea5323288afe258f95"
+  },
+  "compiler": {
+    "version": "25.0.2"
+  },
+  "libraries": [
+    {
+      "path": "net/fabricmc/fabric-loader/0.20.1/fabric-loader-0.20.1.jar",
+      "sha256": "d0c5a082e07410aaff9de7ab196aa6b4236002870f9ba3ad5c1260fcce5110ad"
+    },
+    {
+      "path": "net/fabricmc/sponge-mixin/0.17.5+mixin.0.8.7/sponge-mixin-0.17.5+mixin.0.8.7.jar",
+      "sha256": "03f0065023bfc3045d71bfb99872451d9ad5a0800a5a0dac34ab8c7d5c134f5d"
+    },
+    {
+      "path": "org/ow2/asm/asm/9.10.1/asm-9.10.1.jar",
+      "sha256": "ed825d10ab1399c8c0cb669e688cf0c8c82629b4c8399b58352b68e92ca10fcb"
+    },
+    {
+      "path": "org/ow2/asm/asm-tree/9.10.1/asm-tree-9.10.1.jar",
+      "sha256": "3dfb0d5b6a106cd40b5b250e39935fbf2f927f4477546a5369a3ac609cf0506b"
+    },
+    {
+      "path": "org/ow2/asm/asm-analysis/9.10.1/asm-analysis-9.10.1.jar",
+      "sha256": "dede75a21306b65974ecd8f87114ff6970f09fb794157a4ca09ab25c888c2bfc"
+    }
+  ]
+}

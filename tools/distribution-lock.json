@@ -1,0 +1,98 @@
+{
+  "bridgeSourcesSha256": "09208fddbde473663c45eb2f8b0c28f15e69ae5a9eeaafc9c82c4dab9534983b",
+  "compatibilitySources": {
+    "tools/prepare_26_3.py": "ad65ace04cd93e0ef7a0ca68959af81aa4708fa2a3d8ad738622f231f47554d2",
+    "tools/prepare_e4mc_compat.py": "3f4a806b298ffdb7ad9ef0c232f7eb1e8f6ab3ed7a6e9d63d887c4b9f8281034"
+  },
+  "files": [
+    {
+      "path": "config/log4j2.xml",
+      "sha256": "76f35ae63dad7119f3b896ae336c516d4edc08dffdc6de82986c165baee7a350",
+      "sizeBytes": 1583
+    },
+    {
+      "path": "launcher/jvm-args.txt",
+      "sha256": "a1f3a734e672681e16e8db9a35ece57236720f99f95a85bac9eb2caac1e19d3c",
+      "sizeBytes": 44
+    },
+    {
+      "path": "launcher/notices/Directories-MPL-2.0.txt",
+      "sha256": "fab3dd6bdab226f1c08630b1dd917e11fcb4ec5e1e020e2c16f83a0a13863e85",
+      "sizeBytes": 16726
+    },
+    {
+      "path": "launcher/notices/Fabric-API-Apache-2.0.txt",
+      "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+      "sizeBytes": 11357
+    },
+    {
+      "path": "launcher/notices/GPL-3.0.txt",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "sizeBytes": 35149
+    },
+    {
+      "path": "launcher/notices/HideAndHunt-MIT.txt",
+      "sha256": "5420aab2763c73f4b2db3c8ddffab5752303b1c654e27b03b9e19a9f05d92354",
+      "sizeBytes": 1068
+    },
+    {
+      "path": "launcher/notices/Kaleido-Config-LGPL-3.0.txt",
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+      "sizeBytes": 7652
+    },
+    {
+      "path": "launcher/notices/LANMinecraft-MIT.txt",
+      "sha256": "6a3be1bf6515e082b6787b69dd50ce57cf875ed44890fccce05b5a640721dafd",
+      "sizeBytes": 1068
+    },
+    {
+      "path": "launcher/notices/Netty-QUIC-NOTICE.txt",
+      "sha256": "58923dca2441479aafd22ef72d14ab530b4e9273050147348879a99cc80fb2f4",
+      "sizeBytes": 1746
+    },
+    {
+      "path": "launcher/notices/Night-Config-LGPL-3.0.txt",
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+      "sizeBytes": 7651
+    },
+    {
+      "path": "launcher/notices/Quilt-Config-Apache-2.0.txt",
+      "sha256": "c5accbbd8546e94c34aed24afe689a617627d18eed5a6c48277e48db57c23851",
+      "sizeBytes": 11356
+    },
+    {
+      "path": "launcher/notices/THIRD-PARTY.txt",
+      "sha256": "ce02578dd35ff20e6b4db036c9c1bf2acebd630edf88c6e919053509a4d4381e",
+      "sizeBytes": 1801
+    },
+    {
+      "path": "launcher/notices/e4mc-MIT.txt",
+      "sha256": "518b161164823bef929b12952439c79abe45004472b5c0c3d174c887f82fe5f2",
+      "sizeBytes": 1259
+    },
+    {
+      "path": "launcher/pack-owned.txt",
+      "sha256": "20b244ac6cfb89d344b37b9ac4d077bd368f5f0ac391541801d06b22464313b5",
+      "sizeBytes": 18
+    },
+    {
+      "path": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "sha256": "13dac2aaf3b505e420f76369615a96fd36b699091e14c9206945bbf4218ad48e",
+      "sizeBytes": 26417141
+    },
+    {
+      "path": "mods/lanminecraft-hide-and-hunt-bridge-1.0.0.jar",
+      "sha256": "83e10c4940a5b0d472a1d3cafca8d73bf54209649f5ba0182178072cb46d45b9",
+      "sizeBytes": 22716
+    },
+    {
+      "path": "portable-pack.json",
+      "sha256": "a275c59d4f44f8be00d594e4f3535428305fe62b7fb2bc1ce874c6836945c94f",
+      "sizeBytes": 146
+    }
+  ],
+  "nativeInventorySha256": "4be5561768905ff39397d79bbf78416244cc9e90090c7d2709d9a2b51ce3d6a7",
+  "overlayRecipeSha256": "c925a86de6f29a0d13f9082d90de1bb4379576dfb74a119bf2fe008c617cbdec",
+  "schemaVersion": 1,
+  "upstreamLockSha256": "34413ae1545e589e23e19b5fb9f3564386f46491f2bc0588c4594ed28c68b98e"
+}

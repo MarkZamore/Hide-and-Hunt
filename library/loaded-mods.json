@@ -1,0 +1,322 @@
+{
+  "loader": {
+    "type": "fabric",
+    "version": "0.20.1"
+  },
+  "managedInfrastructure": {
+    "e4steam": "0.3.4+modern",
+    "fabricloader": "0.20.1",
+    "java": "25",
+    "minecraft": "26.3",
+    "mixinextras": "0.5.5"
+  },
+  "minecraftVersion": "26.3",
+  "mods": [
+    {
+      "id": "e4mc",
+      "name": "e4mc",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "6.2.3+modern"
+    },
+    {
+      "id": "fabric-advancement-api-v1",
+      "name": "Fabric Advancement API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "1.0.1+38c7a2d55d"
+    },
+    {
+      "id": "fabric-api",
+      "name": "Fabric API",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "0.165.0+26.3"
+    },
+    {
+      "id": "fabric-api-base",
+      "name": "Fabric API Base",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "2.0.6+fcdff87f5d"
+    },
+    {
+      "id": "fabric-api-lookup-api-v1",
+      "name": "Fabric API Lookup API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "2.0.24+3434d6d95d"
+    },
+    {
+      "id": "fabric-biome-api-v1",
+      "name": "Fabric Biome API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "20.1.1+85210bca5d"
+    },
+    {
+      "id": "fabric-block-api-v1",
+      "name": "Fabric Block API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "3.1.0+0ae6f9115d"
+    },
+    {
+      "id": "fabric-block-getter-api-v2",
+      "name": "Fabric BlockGetter API (v2)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "2.0.9+3434d6d95d"
+    },
+    {
+      "id": "fabric-command-api-v2",
+      "name": "Fabric Command API (v2)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "3.1.2+fcdff87f5d"
+    },
+    {
+      "id": "fabric-content-registries-v0",
+      "name": "Fabric Content Registries (v0)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "15.0.6+74ed1ea55d"
+    },
+    {
+      "id": "fabric-convention-tags-v2",
+      "name": "Fabric Convention Tags (v2)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "4.10.5+187b64905d"
+    },
+    {
+      "id": "fabric-crash-report-info-v1",
+      "name": "Fabric Crash Report Info (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "1.0.7+fcdff87f5d"
+    },
+    {
+      "id": "fabric-creative-tab-api-v1",
+      "name": "Fabric Creative Tab API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "5.0.22+fcdff87f5d"
+    },
+    {
+      "id": "fabric-data-attachment-api-v1",
+      "name": "Fabric Data Attachment API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "2.2.33+b9b88df45d"
+    },
+    {
+      "id": "fabric-data-generation-api-v1",
+      "name": "Fabric Data Generation API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "27.4.2+187b64905d"
+    },
+    {
+      "id": "fabric-debug-api-v1",
+      "name": "Fabric Debug API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "1.0.5+5af7744b5d"
+    },
+    {
+      "id": "fabric-dimensions-v1",
+      "name": "Fabric Dimensions API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "5.1.20+5af7744b5d"
+    },
+    {
+      "id": "fabric-entity-events-v1",
+      "name": "Fabric Entity Events (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "6.0.4+3434d6d95d"
+    },
+    {
+      "id": "fabric-events-interaction-v0",
+      "name": "Fabric Events Interaction (v0)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "5.3.9+b9b88df45d"
+    },
+    {
+      "id": "fabric-game-rule-api-v1",
+      "name": "Fabric Game Rule API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "4.0.10+3434d6d95d"
+    },
+    {
+      "id": "fabric-item-api-v1",
+      "name": "Fabric Item API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "14.8.0+d1c0d72b5d"
+    },
+    {
+      "id": "fabric-key-mapping-api-v1",
+      "name": "Fabric Key Mapping API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "2.0.8+3434d6d95d"
+    },
+    {
+      "id": "fabric-lifecycle-events-v1",
+      "name": "Fabric Lifecycle Events (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "4.1.9+ffef5f675d"
+    },
+    {
+      "id": "fabric-loot-api-v3",
+      "name": "Fabric Loot API (v3)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "4.0.9+4068fd645d"
+    },
+    {
+      "id": "fabric-menu-api-v1",
+      "name": "Fabric Menu API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "2.0.30+ed66f0a35d"
+    },
+    {
+      "id": "fabric-message-api-v1",
+      "name": "Fabric Message API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "7.0.10+3434d6d95d"
+    },
+    {
+      "id": "fabric-model-loading-api-v1",
+      "name": "Fabric Model Loading API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "8.0.37+fcdff87f5d"
+    },
+    {
+      "id": "fabric-networking-api-v1",
+      "name": "Fabric Networking API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "6.4.0+a21c9eb65d"
+    },
+    {
+      "id": "fabric-object-builder-api-v1",
+      "name": "Fabric Object Builder API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "24.1.12+e2f63d3e5d"
+    },
+    {
+      "id": "fabric-particles-v1",
+      "name": "Fabric Particles (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "5.0.27+3434d6d95d"
+    },
+    {
+      "id": "fabric-permission-api-v1",
+      "name": "Fabric Permission API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "1.0.8+fcdff87f5d"
+    },
+    {
+      "id": "fabric-recipe-api-v1",
+      "name": "Fabric Recipe API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "10.0.11+b9b88df45d"
+    },
+    {
+      "id": "fabric-registry-sync-v0",
+      "name": "Fabric Registry Sync (v0)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "8.0.4+1ca9f6365d"
+    },
+    {
+      "id": "fabric-renderer-api-v1",
+      "name": "Fabric Renderer API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "17.0.17+79385d0b5d"
+    },
+    {
+      "id": "fabric-renderer-indigo",
+      "name": "Fabric Renderer - Indigo",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "9.1.25+b9d63e335d"
+    },
+    {
+      "id": "fabric-rendering-fluids-v1",
+      "name": "Fabric Rendering Fluids (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "6.0.6+3434d6d95d"
+    },
+    {
+      "id": "fabric-rendering-v1",
+      "name": "Fabric Rendering (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "27.2.0+eb9fe70b5d"
+    },
+    {
+      "id": "fabric-resource-conditions-api-v1",
+      "name": "Fabric Resource Conditions API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "6.2.0+0d124ae85d"
+    },
+    {
+      "id": "fabric-resource-loader-v0",
+      "name": "Fabric Resource Loader (v0)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "3.3.27+4fc5413f5d"
+    },
+    {
+      "id": "fabric-resource-loader-v1",
+      "name": "Fabric Resource Loader (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "3.1.0+5af7744b5d"
+    },
+    {
+      "id": "fabric-screen-api-v1",
+      "name": "Fabric Screen API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "5.2.4+48607d035d"
+    },
+    {
+      "id": "fabric-serialization-api-v1",
+      "name": "Fabric Serialization API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "2.0.7+74ed1ea55d"
+    },
+    {
+      "id": "fabric-sound-api-v1",
+      "name": "Fabric Sound API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "2.0.7+3434d6d95d"
+    },
+    {
+      "id": "fabric-tag-api-v1",
+      "name": "Fabric Tag API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "2.1.11+fcdff87f5d"
+    },
+    {
+      "id": "fabric-transfer-api-v1",
+      "name": "Fabric Transfer API (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "8.0.25+fcdff87f5d"
+    },
+    {
+      "id": "fabric-transitive-access-wideners-v1",
+      "name": "Fabric Transitive Access Wideners (v1)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "8.1.17+e2f63d3e5d"
+    },
+    {
+      "id": "folk_sisby_kaleido-config",
+      "name": "kaleido-config",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "0.3.3+1.3.2"
+    },
+    {
+      "id": "hideandhunt",
+      "name": "Hide and Hunt",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "1.0.0-beta.2+26.3"
+    },
+    {
+      "id": "hideandhunt_bundle",
+      "name": "Hide and Hunt (26.1 – 26.3)",
+      "source": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar",
+      "version": "1.0.0-beta.2+26.1-26.3"
+    },
+    {
+      "id": "lanminecraft_hide_and_hunt_bridge",
+      "name": "LANMinecraft Hide and Hunt bridge",
+      "source": "mods/lanminecraft-hide-and-hunt-bridge-1.0.0.jar",
+      "version": "1.0.0"
+    }
+  ],
+  "observationSha256": "d7cdce6f586f2e35096f8e62822c6dc8af45c676989816548538b09964cef1f0",
+  "schemaVersion": 1,
+  "sourceJars": {
+    "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.1.jar": "13dac2aaf3b505e420f76369615a96fd36b699091e14c9206945bbf4218ad48e",
+    "mods/lanminecraft-hide-and-hunt-bridge-1.0.0.jar": "83e10c4940a5b0d472a1d3cafca8d73bf54209649f5ba0182178072cb46d45b9"
+  }
+}

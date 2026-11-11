@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "upstreamLock": "tools/upstream-lock.json",
+  "operations": [
+    {
+      "kind": "minecraft-26.3-renderer-handler-abi",
+      "script": "tools/prepare_26_3.py",
+      "scope": "The author EntityRendererMixin and a downstream provenance notice"
+    },
+    {
+      "kind": "pack-owned-fabric-companion",
+      "script": "bridge/build.py",
+      "scope": "Explicit e4mc opt-in and no UPnP fallback"
+    },
+    {
+      "kind": "e4mc-listener-coexistence",
+      "script": "tools/prepare_e4mc_compat.py",
+      "scope": "e4mc ban-command conflicts, owner-login bypass and experimental Dialtone resolution and login hooks"
+    },
+    {
+      "kind": "bounded-network-exception-logging",
+      "receipt": "tools/network-logging-policy.json",
+      "scope": "The pack-owned Log4j config and its JVM selector"
+    }
+  ]
+}

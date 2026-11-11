@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "release": "FaWrAGlY",
+  "project": "M5kGx3Is",
+  "version": "1.0.0-beta.2+26.1-26.3",
+  "file": {
+    "path": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.1-26.3.jar",
+    "url": "https://cdn.modrinth.com/data/M5kGx3Is/versions/FaWrAGlY/HideAndHunt-Fabric-1.0.0-beta.2%2B26.1-26.3.jar",
+    "sizeBytes": 23831177,
+    "sha256": "33a9d4215dcc151739df622870cce98135c3126d1db2ecf248d4a7baa0f78db7",
+    "license": "MIT"
+  },
+  "selected": [
+    {
+      "entries": ["META-INF/jars/HideAndHunt-Fabric-1.0.0-beta.2+26.3.jar"],
+      "id": "hideandhunt",
+      "version": "1.0.0-beta.2+26.3",
+      "sizeBytes": 4207428,
+      "sha256": "d553666404b8ff17b0bd9a9f6d3824020660498a9ecb973dd772f668bc557eab",
+      "license": "MIT"
+    },
+    {
+      "entries": ["META-INF/jars/HideAndHunt-Fabric-1.0.0-beta.2+26.3.jar", "META-INF/jars/e4mc-fabric-6.2.3-modern.jar"],
+      "id": "e4mc",
+      "version": "6.2.3+modern",
+      "sizeBytes": 663905,
+      "sha256": "50125e336c383688403e2fb24c5d88af82cd4b64288359ea5323288afe258f95",
+      "license": "MIT",
+      "officialFile": "https://modrinth.com/mod/e4mc/version/RNDvrMAd"
+    },
+    {
+      "entries": ["META-INF/jars/HideAndHunt-Fabric-1.0.0-beta.2+26.3.jar", "META-INF/jars/fabric-api-0.165.0+26.3.jar"],
+      "id": "fabric-api",
+      "version": "0.165.0+26.3",
+      "sizeBytes": 1778588,
+      "sha256": "18442e2ad466d6ef41c37dbb4cb68495e6ca6658b1f1ee9be76143d155ef2c88",
+      "license": "Apache-2.0",
+      "officialFile": "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/0.165.0%2B26.3/fabric-api-0.165.0%2B26.3.jar"
+    },
+    {
+      "entries": ["META-INF/jars/HideAndHunt-Fabric-1.0.0-beta.2+26.3.jar", "META-INF/jars/e4mc-fabric-6.2.3-modern.jar", "META-INF/jars/kaleido-config-0.3.3+1.3.2.jar"],
+      "id": "folk_sisby_kaleido-config",
+      "version": "0.3.3+1.3.2",
+      "sizeBytes": 313805,
+      "sha256": "9ab7b0a5c391509518036524026e2ae66f11eb9f0d0afbf8b91280a75b423eb8",
+      "license": "LGPL-3.0 AND Apache-2.0",
+      "sourceRevision": "0bc38fea0b586bae20f2ce296851592498bfdc0a"
+    }
+  ]
+}

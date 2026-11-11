@@ -42,8 +42,8 @@
     },
     {
       "path": "launcher/notices/LANMinecraft-MIT.txt",
-      "sha256": "6a3be1bf6515e082b6787b69dd50ce57cf875ed44890fccce05b5a640721dafd",
-      "sizeBytes": 1068
+      "sha256": "540b75499aa4f4f5a4d69bfdbd0ce0fa1e055cbef0737ad304d0a57509f8971e",
+      "sizeBytes": 1089
     },
     {
       "path": "launcher/notices/Netty-QUIC-NOTICE.txt",

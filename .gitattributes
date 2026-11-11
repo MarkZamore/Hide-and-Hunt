@@ -1,5 +1,6 @@
 * text=auto eol=lf
 *.jpg binary
+LICENSE -text whitespace=cr-at-eol
 config/log4j2.xml -text
 notices/*.txt -text
 notices/Directories-MPL-2.0.txt whitespace=-blank-at-eol

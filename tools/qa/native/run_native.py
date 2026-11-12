@@ -14,7 +14,7 @@ import struct
 import subprocess
 import sys
 from threading import Thread
-from urllib.parse import quote, urlsplit
+from urllib.parse import quote
 from urllib.request import urlopen
 from uuid import UUID
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -32,6 +32,7 @@ STEAM_NAME = "e4steam-fabric-quilt-mc26.1-26.3-v0.3.4-lanmc-native-ui.2.jar"
 STEAM_SHA = "248fe6c4bf8f4decd0eea2c0883f15559eedd7491e6a9b5859b3bd1cafdcb26d"
 QA_USER = "HideHuntQA"
 OWNER = "Hide and Hunt native QA"
+PACK = Path(__file__).resolve().parents[3]
 
 
 def json_write(path, value):
@@ -131,7 +132,7 @@ def create_fixture(workspace, root):
         now = datetime.now(timezone.utc)
         json_write(marker, {
             "owner": OWNER,
-            "purpose": "One real Fabric instance, synthetic local worlds and a loopback e4mc broker",
+            "purpose": "One real Fabric instance with synthetic local worlds and skins",
             "createdAt": now.isoformat(),
             "deleteBy": (now + timedelta(hours=20)).isoformat(),
             "expectedMaxBytes": 2 * 1024**3,
@@ -195,21 +196,29 @@ def stage_game(root, content, bridge):
     game = root / "game"
     mods = game / "mods"
     mods.mkdir(parents=True, exist_ok=True)
+    retired = json.loads((PACK / "tools/retired-files.json").read_text(encoding="utf-8"))
+    if content is not None:
+        retired.append({"path": f"mods/{UPSTREAM_NAME}", "sha256": UPSTREAM_SHA, "sizeBytes": 23831177})
+    for row in retired:
+        if not row["path"].startswith("mods/"):
+            continue
+        previous = mods / Path(row["path"]).name
+        if previous.exists():
+            if not matches(previous, row["sha256"], "sha256", row["sizeBytes"]):
+                raise ValueError(f"Unexpected bytes in previous QA mod: {previous.name}")
+            previous.unlink()
     if content is None:
         exact_get("https://cdn.modrinth.com/data/M5kGx3Is/versions/FaWrAGlY/" + quote(UPSTREAM_NAME),
                   mods / UPSTREAM_NAME, UPSTREAM_SHA, size=23831177)
     else:
-        (mods / UPSTREAM_NAME).unlink(missing_ok=True)
         shutil.copyfile(content, mods / content.name)
     config = game / "config"
-    for mod in ("e4steam", "e4mc"):
-        (config / mod).mkdir(parents=True, exist_ok=True)
+    (config / "e4steam").mkdir(parents=True, exist_ok=True)
     if bridge:
         shutil.copyfile(bridge, mods / bridge.name)
         exact_get("https://github.com/MarkZamore/e4steam/releases/download/native-lan-ui-v2/" + STEAM_NAME,
                   mods / STEAM_NAME, STEAM_SHA, size=3798124)
-        pack = Path(__file__).resolve().parents[3]
-        shutil.copyfile(pack / "config/log4j2.xml", config / "log4j2.xml")
+        shutil.copyfile(PACK / "config/log4j2.xml", config / "log4j2.xml")
     else:
         (mods / STEAM_NAME).unlink(missing_ok=True)
     # Keep the QA instance from registering a live Steam host.
@@ -257,8 +266,7 @@ def run(workspace, root, jdk, label, content, bridge, adapter_args):
     game = stage_game(root, content, bridge)
     pack_args = []
     if bridge:
-        pack = Path(__file__).resolve().parents[3]
-        pack_args = [arg for arg in (pack / "launcher/jvm-args.txt").read_text(encoding="utf-8").splitlines()
+        pack_args = [arg for arg in (PACK / "launcher/jvm-args.txt").read_text(encoding="utf-8").splitlines()
                      if arg and not arg.startswith("#")]
     agent = compile_agent(jdk, root, libraries)
     temp = root / "temp"
@@ -272,7 +280,6 @@ def run(workspace, root, jdk, label, content, bridge, adapter_args):
         "qaBridgeSha256": sha256(bridge.read_bytes()).hexdigest() if bridge else None,
         "steamJarSha256": STEAM_SHA if bridge else None,
         "actualSteamSession": "NOT RUN",
-        "publicE4mcRelay": "NOT RUN",
     })
 
     player = UUID(bytes=md5(f"OfflinePlayer:{QA_USER}".encode()).digest(), version=3)
@@ -280,7 +287,7 @@ def run(workspace, root, jdk, label, content, bridge, adapter_args):
     skin_hash = sha256(skin).hexdigest()
     skin_path = f"/skin/{player}/{skin_hash}"
 
-    class ProbeBroker(BaseHTTPRequestHandler):
+    class SkinServer(BaseHTTPRequestHandler):
         def do_GET(self):
             if self.path == skin_path:
                 with (evidence / "skin-requests.log").open("a", encoding="utf-8") as output:
@@ -291,24 +298,18 @@ def run(workspace, root, jdk, label, content, bridge, adapter_args):
                 self.end_headers()
                 self.wfile.write(skin)
                 return
-            with (evidence / "e4mc-requests.log").open("a", encoding="utf-8") as output:
-                output.write(urlsplit(self.path).path + "\n")
-            self.send_error(503, "QA loopback only")
+            self.send_error(404)
 
         def log_message(self, format, *args):
             pass
 
-    with ThreadingHTTPServer(("127.0.0.1", 0), ProbeBroker) as broker:
-        (game / "config/e4mc/e4mc.toml").write_text(
-            "hostEnabled = true\ndialtoneHostEnabled = false\ndialtonePlayerEnabled = false\nuseBroker = true\n"
-            f'brokerUrl = "http://127.0.0.1:{broker.server_port}/getBestRelay"\n', encoding="utf-8",
-        )
-        thread = Thread(target=broker.serve_forever, daemon=True)
+    with ThreadingHTTPServer(("127.0.0.1", 0), SkinServer) as skins:
+        thread = Thread(target=skins.serve_forever, daemon=True)
         thread.start()
         identity_args = []
         if adapter_args:
             registry = evidence / "skin-registry.txt"
-            registry.write_text(f"{player}|{skin_hash}|classic|http://127.0.0.1:{broker.server_port}{skin_path}\n",
+            registry.write_text(f"{player}|{skin_hash}|classic|http://127.0.0.1:{skins.server_port}{skin_path}\n",
                                 encoding="utf-8")
             identity_args = [
                 f"-Dminecraft.portable.skin.registry={registry}",
@@ -357,7 +358,7 @@ def run(workspace, root, jdk, label, content, bridge, adapter_args):
                 if child.poll() is None:
                     child.terminate()
                     child.wait(timeout=20)
-                broker.shutdown()
+                skins.shutdown()
                 thread.join(timeout=5)
 
 

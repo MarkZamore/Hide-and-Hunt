@@ -5,21 +5,22 @@ import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Set;
 import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.IincInsnNode;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -29,14 +30,12 @@ public final class BridgePlugin implements IMixinConfigPlugin {
     static final String PENDING = HOSTING + "$Pending";
     static final String CREATE = "de/hideandhunt/client/screen/CreateWorldView";
     static final String MENU = "de/hideandhunt/client/screen/HhMenuView";
-    static final String LISTENER = "net/minecraft/server/network/ServerConnectionListener";
-    static final String E4MC_MIXIN = "link.e4mc.mixin.ServerConnectionListenerMixin";
-    static final String E4MC_HANDLER = "(Ljava/net/InetAddress;ILorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V";
     static final String PUBLISH = "(Lnet/minecraft/server/MinecraftServer$MultiplayerScope;ZI)Z";
     static final String SERVER = "net/minecraft/client/server/IntegratedServer";
-    static final String POLICY = "lanminecraft/hideandhunt/RelayPolicy";
-    private static final String TRACKED_VALUE = "folk/sisby/kaleido/lib/quiltconfig/api/values/TrackedValue";
+    private static final String UPNP = "de/hideandhunt/client/host/Upnp";
+    private static final String WIDGETS = "de/hideandhunt/client/ui/Widgets";
     private static final String DRAW = "(Lde/hideandhunt/client/ui/Canvas;IIF)V";
+    private static final String TOGGLE = "(Lde/hideandhunt/client/ui/Canvas;IIZIIF)V";
     private static final String TEXT = "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)Lnet/minecraft/network/chat/MutableComponent;";
 
     @Override
@@ -45,7 +44,6 @@ public final class BridgePlugin implements IMixinConfigPlugin {
         verifyOrigin("hideandhunt", PENDING, "473ea2e9bb882aaf2a37e1f04f9439533d5a592ded6c6acbdf7cc8a2f1b403af");
         verifyOrigin("hideandhunt", CREATE, "4652c5ff1a0a53280cee61bcc2aaa2e766f010bec769d07f4eedc65055b82fa3");
         verifyOrigin("hideandhunt", MENU, "e1b138a43962f4c54ea44af99b8525f0e9916569e20aca3e205bfa228a4e8dec");
-        verifyOrigin("e4mc", E4MC_MIXIN.replace('.', '/'), "f68da7dfdfcecf04bc0509caf2feec41d080245db1035fdd581d6b79c2008fb9");
     }
 
     private static void verifyOrigin(String mod, String className, String expected) {
@@ -65,7 +63,6 @@ public final class BridgePlugin implements IMixinConfigPlugin {
 
     @Override
     public void postApply(String targetClassName, ClassNode target, String mixinClassName, IMixinInfo mixinInfo) {
-        // Mixin has merged the native e4mc handler before any postApply call.
         apply(target);
     }
 
@@ -74,62 +71,81 @@ public final class BridgePlugin implements IMixinConfigPlugin {
             case HOSTING -> patchHosting(target);
             case CREATE -> patchCreate(target);
             case MENU -> patchMenu(target);
-            case LISTENER -> patchListener(target);
             default -> throw incompatible("unexpected target " + target.name);
         }
     }
 
     private static void patchHosting(ClassNode target) {
         MethodNode joined = method(target, "joined", "()V");
-        MethodInsnNode publication = call(joined, Opcodes.INVOKEVIRTUAL, SERVER, "publishServer", PUBLISH);
-        AbstractInsnNode portAdd = previous(publication);
-        AbstractInsnNode attempt = previous(portAdd);
-        AbstractInsnNode getPort = previous(attempt);
-        AbstractInsnNode pending = previous(getPort);
-        if (portAdd.getOpcode() != Opcodes.IADD || attempt.getOpcode() != Opcodes.ILOAD
-            || !isCall(getPort, Opcodes.INVOKEVIRTUAL, PENDING, "port", "()I")
-            || !(pending instanceof VarInsnNode local) || pending.getOpcode() != Opcodes.ALOAD) {
-            throw incompatible("unknown author publication arguments");
-        }
-
-        List<MethodInsnNode> internetChecks = calls(joined, Opcodes.INVOKEVIRTUAL, PENDING, "upnp", "()Z");
-        if (internetChecks.size() != 4) {
-            throw incompatible("unknown author internet choices");
-        }
-        MethodInsnNode upnpFallback = internetChecks.getLast();
-        if (next(upnpFallback).getOpcode() != Opcodes.IFEQ) {
-            throw incompatible("unknown author UPnP fallback");
-        }
-        call(method(target, "lambda$joined$1", "(ILnet/minecraft/client/Minecraft;)V"),
-            Opcodes.INVOKESTATIC, "de/hideandhunt/client/host/Upnp", "open",
-            "(I)Lde/hideandhunt/client/host/Upnp$Mapping;");
-
-        // The pending record is consumed in joined() before publication.
-        // Read its world-specific choice from the live local for each port attempt.
-        joined.instructions.insertBefore(publication, new VarInsnNode(Opcodes.ALOAD, local.var));
-        joined.instructions.insertBefore(publication,
-            new MethodInsnNode(Opcodes.INVOKEVIRTUAL, PENDING, "upnp", "()Z", false));
-        joined.instructions.set(publication, new MethodInsnNode(Opcodes.INVOKESTATIC, POLICY, "publish",
-            "(L" + SERVER + ";Lnet/minecraft/server/MinecraftServer$MultiplayerScope;ZIZ)Z", false));
-        joined.maxStack += 1;
-
-        joined.instructions.insertBefore(upnpFallback, new InsnNode(Opcodes.POP));
-        joined.instructions.set(upnpFallback, new InsnNode(Opcodes.ICONST_0));
-        MethodInsnNode lanAddress = call(joined, Opcodes.INVOKESTATIC, HOSTING, "lanAddress", "()Ljava/lang/String;");
-        joined.instructions.set(lanAddress, new InsnNode(Opcodes.ACONST_NULL));
-        replaceText(joined, "hh.host.open", "world.open",
+        call(joined, Opcodes.INVOKEVIRTUAL, SERVER, "publishServer", PUBLISH);
+        MethodInsnNode message = replaceText(joined, "hh.host.open", "world.open",
             "Deine Welt ist offen. Steam-Freunde finden sie im Mehrspielermenü.",
             "Your world is open. Steam friends can find it in Multiplayer.");
+        AbstractInsnNode chat = next(message);
+        AbstractInsnNode tail = next(chat);
+        if (!isCall(chat, Opcodes.INVOKESTATIC, HOSTING, "chat", "(Lnet/minecraft/network/chat/Component;)V")
+            || tail.getOpcode() != Opcodes.ALOAD
+            || !isCall(next(tail), Opcodes.INVOKEVIRTUAL, PENDING, "upnp", "()Z")) {
+            throw incompatible("unknown code after native publication");
+        }
+        // Keep native port retries, the failure branch and the success message.
+        // An old world's saved upnp flag is no longer consulted here.
+        removeCode(joined, tail, null);
+        joined.instructions.add(new InsnNode(Opcodes.RETURN));
+
+        MethodNode mapping = method(target, "lambda$joined$1", "(ILnet/minecraft/client/Minecraft;)V");
+        call(mapping, Opcodes.INVOKESTATIC, UPNP, "open", "(I)L" + UPNP + "$Mapping;");
+        target.methods.remove(mapping);
+        target.methods.remove(method(target, "lambda$joined$2", "(L" + UPNP + "$Mapping;I)V"));
     }
 
     private static void patchCreate(ClassNode target) {
         MethodNode draw = method(target, "draw", DRAW);
-        replaceText(draw, "hh.cw.upnp", "e4mc", "Über e4mc", "Via e4mc");
-        replaceText(draw, "hh.cw.upnp.e4mc", "e4mc.hint",
-            "Erstellt eine e4mc-Adresse zum manuellen Teilen.",
-            "Creates an e4mc address you can share manually.");
-        replaceText(draw, "hh.cw.upnp.hint2", "e4mc.unavailable",
-            "e4mc ist nicht verfügbar.", "e4mc is unavailable.");
+        MethodInsnNode toggle = call(draw, Opcodes.INVOKEVIRTUAL, CREATE, "toggle", TOGGLE);
+        MethodInsnNode relay = call(draw, Opcodes.INVOKESTATIC, HOSTING, "relayMod", "()Z");
+        List<MethodInsnNode> loops = calls(draw, Opcodes.INVOKEINTERFACE, "java/util/Iterator", "hasNext", "()Z");
+        if (loops.size() != 2
+            || !(next(loops.getFirst()) instanceof JumpInsnNode portHintEnd) || portHintEnd.getOpcode() != Opcodes.IFEQ
+            || !(next(portHintEnd.label) instanceof IincInsnNode spacer) || spacer.var != 11 || spacer.incr != 34
+            || !(next(loops.getLast()) instanceof JumpInsnNode relayHintEnd) || relayHintEnd.getOpcode() != Opcodes.IFEQ
+            || draw.instructions.indexOf(spacer) >= draw.instructions.indexOf(toggle)
+            || draw.instructions.indexOf(toggle) >= draw.instructions.indexOf(relay)
+            || draw.instructions.indexOf(relay) >= draw.instructions.indexOf(relayHintEnd)) {
+            throw incompatible("unknown world creation toggle layout");
+        }
+        removeCode(draw, spacer, next(relayHintEnd.label));
+        target.methods.remove(method(target, "toggle", TOGGLE));
+        List<IntInsnNode> heights = Arrays.stream(draw.instructions.toArray())
+            .filter(node -> node instanceof IntInsnNode value && value.getOpcode() == Opcodes.SIPUSH
+                && value.operand == 196)
+            .map(IntInsnNode.class::cast).toList();
+        if (heights.size() != 1) {
+            throw incompatible("unknown world creation form height");
+        }
+        heights.getFirst().operand = 170;
+
+        MethodNode click = method(target, "click", "(DDII)Z");
+        MethodInsnNode inside = call(click, Opcodes.INVOKESTATIC, CREATE, "inside", "(DDIIII)Z");
+        MethodInsnNode widgetClick = call(click, Opcodes.INVOKEVIRTUAL, WIDGETS, "click", "(DD)Ljava/lang/String;");
+        if (!(next(inside) instanceof JumpInsnNode continueClick) || continueClick.getOpcode() != Opcodes.IFEQ
+            || next(continueClick.label).getOpcode() != Opcodes.ALOAD
+            || click.instructions.indexOf(continueClick.label) >= click.instructions.indexOf(widgetClick)) {
+            throw incompatible("unknown world creation toggle hit area");
+        }
+        removeCode(click, click.instructions.getFirst(), next(continueClick.label));
+
+        MethodNode create = method(target, "create", "()V");
+        MethodInsnNode minecraft = call(create, Opcodes.INVOKESTATIC, "net/minecraft/client/Minecraft",
+            "getInstance", "()Lnet/minecraft/client/Minecraft;");
+        AbstractInsnNode flag = previous(minecraft);
+        AbstractInsnNode receiver = previous(flag);
+        if (!(flag instanceof FieldInsnNode field) || flag.getOpcode() != Opcodes.GETFIELD
+            || !field.owner.equals(CREATE) || !field.name.equals("upnp") || !field.desc.equals("Z")
+            || !(receiver instanceof VarInsnNode local) || local.getOpcode() != Opcodes.ALOAD || local.var != 0) {
+            throw incompatible("unknown world creation internet flag");
+        }
+        create.instructions.remove(receiver);
+        create.instructions.set(flag, new InsnNode(Opcodes.ICONST_0));
     }
 
     private static void patchMenu(ClassNode target) {
@@ -153,64 +169,25 @@ public final class BridgePlugin implements IMixinConfigPlugin {
         init.maxLocals = 1;
 
         MethodNode draw = method(target, "draw", DRAW);
+        replaceText(draw, "hh.mm.internet", "world.steam", "Steam", "Steam");
+        replaceText(draw, "hh.mm.lan", "world.steam", "Steam", "Steam");
+        replaceText(draw, "hh.mm.join.sub", "saved.title", "gespeicherte Adressen", "saved addresses");
         replaceText(draw, "hh.mm.join.none", "saved.empty", "Keine gespeicherten Adressen.", "No saved addresses.");
         replaceText(draw, "hh.mm.join.none2", "saved.hint",
             "Steam-Welten stehen im Mehrspielermenü.", "Find Steam worlds in Multiplayer.");
     }
 
-    private static void patchListener(ClassNode target) {
-        List<MethodNode> handlers = target.methods.stream()
-            .filter(method -> method.desc.equals(E4MC_HANDLER) && fromE4mc(method.visibleAnnotations))
-            .toList();
-        if (handlers.size() != 1) {
-            throw incompatible("expected one merged e4mc listener handler");
+    private static void removeCode(MethodNode method, AbstractInsnNode start, AbstractInsnNode end) {
+        for (AbstractInsnNode instruction = start; instruction != end;) {
+            AbstractInsnNode following = instruction.getNext();
+            method.instructions.remove(instruction);
+            instruction = following;
         }
-        MethodNode handler = handlers.getFirst();
-        call(handler, Opcodes.INVOKEVIRTUAL, "link/e4mc/QuiclimeSession", "startAsync", "()V");
-        List<FieldInsnNode> reads = new ArrayList<>();
-        for (AbstractInsnNode instruction : handler.instructions) {
-            if (instruction instanceof FieldInsnNode field && field.getOpcode() == Opcodes.GETFIELD
-                && field.owner.equals("link/e4mc/Config") && field.name.equals("hostEnabled")
-                && field.desc.equals("L" + TRACKED_VALUE + ";")) {
-                reads.add(field);
-            }
-        }
-        if (reads.size() != 1) {
-            throw incompatible("expected one e4mc hostEnabled read");
-        }
-        AbstractInsnNode value = next(reads.getFirst());
-        AbstractInsnNode cast = next(value);
-        AbstractInsnNode unbox = next(cast);
-        if (!isCall(value, Opcodes.INVOKEINTERFACE, TRACKED_VALUE, "value", "()Ljava/lang/Object;")
-            || !(cast instanceof TypeInsnNode type) || cast.getOpcode() != Opcodes.CHECKCAST
-            || !type.desc.equals("java/lang/Boolean")
-            || !isCall(unbox, Opcodes.INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z")
-            || next(unbox).getOpcode() != Opcodes.IFEQ) {
-            throw incompatible("unknown e4mc relay gate");
-        }
-        // Reuse e4mc's own disabled path, which clears captured Netty state.
-        handler.instructions.insert(unbox,
-            new MethodInsnNode(Opcodes.INVOKESTATIC, POLICY, "canHost", "(Z)Z", false));
+        // The original debug scopes can point to labels in the removed block.
+        method.localVariables = null;
     }
 
-    private static boolean fromE4mc(List<AnnotationNode> annotations) {
-        if (annotations == null) {
-            return false;
-        }
-        for (AnnotationNode annotation : annotations) {
-            if (annotation.desc.equals("Lorg/spongepowered/asm/mixin/transformer/meta/MixinMerged;")) {
-                for (int index = 0; index < annotation.values.size(); index += 2) {
-                    if (annotation.values.get(index).equals("mixin")
-                        && annotation.values.get(index + 1).equals(E4MC_MIXIN)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private static void replaceText(MethodNode method, String key, String suffix, String german, String english) {
+    private static MethodInsnNode replaceText(MethodNode method, String key, String suffix, String german, String english) {
         List<LdcInsnNode> keys = new ArrayList<>();
         for (AbstractInsnNode instruction : method.instructions) {
             if (instruction instanceof LdcInsnNode constant && key.equals(constant.cst)) {
@@ -234,6 +211,7 @@ public final class BridgePlugin implements IMixinConfigPlugin {
         sourceKey.cst = "lanminecraft.hideandhunt." + suffix;
         de.cst = german;
         en.cst = english;
+        return (MethodInsnNode) next(array);
     }
 
     private static MethodNode method(ClassNode target, String name, String descriptor) {

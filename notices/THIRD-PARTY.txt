@@ -4,30 +4,13 @@ Hide and Hunt by ItzMaceTekk is MIT-licensed. The exact author release is
 Modrinth FaWrAGlY (1.0.0-beta.2+26.1-26.3).
 https://modrinth.com/plugin/hide-and-hunt/version/FaWrAGlY
 
-The original bundle includes e4mc 6.2.3+modern by Stara Gulli (Skye), MIT.
-This downstream distribution resolves ban-command hook conflicts, removes
-e4mc's owner-login bypass, and disables the experimental Dialtone resolver
-and login hooks. The ordinary generated-address relay stays available.
-https://www.curseforge.com/minecraft/mc-mods/e4mc
-https://github.com/vgskye/e4mc-minecraft-architectury
+This downstream distribution uses the Minecraft 26.3 component. It removes
+the author's bundled e4mc and its startup and relay hooks, and updates the
+Minecraft 26.3 EntityRendererMixin handler ABI.
 
 Fabric API 0.165.0+26.3 by FabricMC and its modules are Apache-2.0.
 https://www.curseforge.com/minecraft/mc-mods/fabric-api
 https://github.com/FabricMC/fabric
-
-e4mc contains Kaleido Config 0.3.3+1.3.2, LGPL-3.0, with relocated Quilt
-Config 1.3.2 (Apache-2.0) and Night Config 3.8.1 (LGPL-3.0) components.
-The corresponding source and upstream build instructions are available at:
-https://github.com/sleepingdragoninn/kaleido-config/tree/0bc38fea0b586bae20f2ce296851592498bfdc0a
-https://github.com/QuiltMC/quilt-config
-https://github.com/TheElectronWill/night-config/tree/v3.8.1
-The unmodified e4mc binary and its nested library can be inspected or
-replaced under their upstream license terms in a separate local copy.
-
-The e4mc artifact also includes relocated Directories JVM 26 (MPL-2.0)
-and Netty QUIC codec 0.0.74.Final.e4mc.1 (Apache-2.0).
-https://repo.maven.apache.org/maven2/dev/dirs/directories/26/directories-26-sources.jar
-https://github.com/vgskye/netty-incubator-codec-quic
 
 The LANMinecraft bridge and authoring tools are MIT-licensed.
 Minecraft, Fabric Loader, Java and the shared e4steam transport are obtained

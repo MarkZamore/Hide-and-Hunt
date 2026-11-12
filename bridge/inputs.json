@@ -6,9 +6,7 @@
   "upstream": {
     "sha256": "33a9d4215dcc151739df622870cce98135c3126d1db2ecf248d4a7baa0f78db7",
     "entry": "META-INF/jars/HideAndHunt-Fabric-1.0.0-beta.2+26.3.jar",
-    "entrySha256": "d553666404b8ff17b0bd9a9f6d3824020660498a9ecb973dd772f668bc557eab",
-    "relayEntry": "META-INF/jars/e4mc-fabric-6.2.3-modern.jar",
-    "relayEntrySha256": "50125e336c383688403e2fb24c5d88af82cd4b64288359ea5323288afe258f95"
+    "entrySha256": "d553666404b8ff17b0bd9a9f6d3824020660498a9ecb973dd772f668bc557eab"
   },
   "compiler": {
     "version": "25.0.2"

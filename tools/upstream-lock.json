@@ -20,15 +20,6 @@
       "license": "MIT"
     },
     {
-      "entries": ["META-INF/jars/HideAndHunt-Fabric-1.0.0-beta.2+26.3.jar", "META-INF/jars/e4mc-fabric-6.2.3-modern.jar"],
-      "id": "e4mc",
-      "version": "6.2.3+modern",
-      "sizeBytes": 663905,
-      "sha256": "50125e336c383688403e2fb24c5d88af82cd4b64288359ea5323288afe258f95",
-      "license": "MIT",
-      "officialFile": "https://modrinth.com/mod/e4mc/version/RNDvrMAd"
-    },
-    {
       "entries": ["META-INF/jars/HideAndHunt-Fabric-1.0.0-beta.2+26.3.jar", "META-INF/jars/fabric-api-0.165.0+26.3.jar"],
       "id": "fabric-api",
       "version": "0.165.0+26.3",
@@ -36,6 +27,17 @@
       "sha256": "18442e2ad466d6ef41c37dbb4cb68495e6ca6658b1f1ee9be76143d155ef2c88",
       "license": "Apache-2.0",
       "officialFile": "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/0.165.0%2B26.3/fabric-api-0.165.0%2B26.3.jar"
+    }
+  ],
+  "removed": [
+    {
+      "entries": ["META-INF/jars/HideAndHunt-Fabric-1.0.0-beta.2+26.3.jar", "META-INF/jars/e4mc-fabric-6.2.3-modern.jar"],
+      "id": "e4mc",
+      "version": "6.2.3+modern",
+      "sizeBytes": 663905,
+      "sha256": "50125e336c383688403e2fb24c5d88af82cd4b64288359ea5323288afe258f95",
+      "license": "MIT",
+      "officialFile": "https://modrinth.com/mod/e4mc/version/RNDvrMAd"
     },
     {
       "entries": ["META-INF/jars/HideAndHunt-Fabric-1.0.0-beta.2+26.3.jar", "META-INF/jars/e4mc-fabric-6.2.3-modern.jar", "META-INF/jars/kaleido-config-0.3.3+1.3.2.jar"],

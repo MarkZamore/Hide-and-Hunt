@@ -16,19 +16,19 @@ python -B $qa --workspace (Get-Location) --fixture $run --jdk $env:JAVA_HOME --l
 ```
 
 Wait for the actual Minecraft title screen before opening **Hide and Hunt**.
-Create a technical world, confirm the e4mc option starts off, exercise a
-minigame, save, quit and reopen the world. Confirm an empty broker request
-log for the first world. Create a separate world with e4mc enabled and
-confirm a loopback broker request. The local broker returns HTTP 503 to
-prevent any real relay. The observer records actual Fabric IDs, versions
-and selected JAR origins without adding a mod to the inventory.
+Create a technical world and check that the form has name and port controls
+without a relay toggle. Start a minigame with bots, save and reopen the world.
+Open a previous QA world with `"upnp": true` and check that it uses the same
+Steam publication path and that the saved flag remains unchanged. Verify the
+manual address list and native Multiplayer menu. The observer records actual
+Fabric IDs, versions and selected JAR origins without adding a mod to the
+inventory. Check that e4mc and its dependencies are absent from that inventory.
 
 The candidate uses the pack logging profile and refuses native Steam API
 initialization through the QA-only agent. A synthetic skin registry and
 loopback PNG are enabled when production adapter options are present.
 Record the nickname in game, the skin download and any visual evidence
-separately from the Java preflight. Mark real Steam sessions and the public
-e4mc relay as `NOT RUN`.
+separately from the Java preflight. Mark real Steam sessions as `NOT RUN`.
 
 Exit Minecraft through its menu. Keep the compact verification report and
 approved preview, then remove owned fixture files and rerun the workspace

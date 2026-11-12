@@ -20,20 +20,19 @@ from public_server_policy import POLICY, inventory_sha256, verify as verify_serv
 
 ROOT = Path(__file__).resolve().parents[1]
 DESCRIPTOR = "portable-pack.json"
-BRIDGE = "mods/lanminecraft-hide-and-hunt-bridge-1.0.0.jar"
+BRIDGE = "mods/lanminecraft-hide-and-hunt-bridge-1.1.0.jar"
 BRIDGE_ID = "lanminecraft_hide_and_hunt_bridge"
 UPSTREAM_LOCK = "tools/upstream-lock.json"
 OVERLAY = "tools/overlay.json"
 INVENTORY = "library/loaded-mods.json"
 DISTRIBUTION_LOCK = "tools/distribution-lock.json"
+RETIRED_FILES = "tools/retired-files.json"
 SERVER_POLICY = "tools/public-server-policy.json"
 CAPABILITY = "steam-native-publication-metadata-v1"
 PLATFORM = {"schemaVersion": 1, "minecraftVersion": "26.3", "loader": {"type": "fabric", "version": "0.20.1"},
             "javaMajorVersion": 25}
 NOTICE_FILES = (
-    "Directories-MPL-2.0.txt", "e4mc-MIT.txt", "Fabric-API-Apache-2.0.txt", "GPL-3.0.txt",
-    "HideAndHunt-MIT.txt", "Kaleido-Config-LGPL-3.0.txt", "Netty-QUIC-NOTICE.txt",
-    "Night-Config-LGPL-3.0.txt", "Quilt-Config-Apache-2.0.txt", "THIRD-PARTY.txt",
+    "Fabric-API-Apache-2.0.txt", "HideAndHunt-MIT.txt", "THIRD-PARTY.txt",
 )
 AUTHORED_FILES = {
     DESCRIPTOR: DESCRIPTOR,
@@ -43,7 +42,8 @@ AUTHORED_FILES = {
     "launcher/notices/LANMinecraft-MIT.txt": "LICENSE",
     **{"launcher/notices/" + name: "notices/" + name for name in NOTICE_FILES},
 }
-PACK_IDS = {"hideandhunt_bundle", "hideandhunt", "e4mc", "fabric-api", BRIDGE_ID}
+PACK_IDS = {"hideandhunt", "fabric-api", BRIDGE_ID}
+FORBIDDEN_IDS = {"e4mc", "e4mc_minecraft", "folk_sisby_kaleido-config", "hideandhunt_bundle", "e4steam"}
 
 
 def require(condition, message):
@@ -99,7 +99,7 @@ def source_inputs(upstream, bridge):
     input_path = lock["file"]["path"]
     require(re.fullmatch(r"mods/[A-Za-z0-9.+-]+\.jar", input_path) is not None, "Invalid upstream JAR path")
     check_pin(upstream, lock["file"], input_path)
-    for row in lock["selected"]:
+    for row in lock["selected"] + lock["removed"]:
         raw = nested_file(upstream, row["entries"])
         check_pin(raw, row, row["id"])
         with ZipFile(BytesIO(raw)) as archive:
@@ -111,8 +111,8 @@ def source_inputs(upstream, bridge):
 
     with ZipFile(BytesIO(bridge)) as archive:
         metadata = parse_json(archive.read("fabric.mod.json"))
-    require((metadata.get("id"), metadata.get("version")) == (BRIDGE_ID, "1.0.0"),
-            "Expected the 1.0.0 pack-owned Hide and Hunt bridge")
+    require((metadata.get("id"), metadata.get("version")) == (BRIDGE_ID, "1.1.0"),
+            "Expected the 1.1.0 pack-owned Hide and Hunt bridge")
     return {"mods/" + OUTPUT_NAME: prepare_26_3(upstream), BRIDGE: bridge}
 
 
@@ -123,9 +123,29 @@ def all_payload(jars):
     return dict(sorted((payload | jars).items()))
 
 
+def verify_steam_jar(raw, source, depth=0):
+    require(depth <= 4, f"Unexpected JAR nesting in {source}")
+    with ZipFile(BytesIO(raw)) as archive:
+        names = archive.namelist()
+        require(len(names) == len(set(names)), f"Duplicate JAR entries in {source}")
+        if "fabric.mod.json" in names:
+            metadata = parse_json(archive.read("fabric.mod.json"))
+            require(metadata["id"] not in FORBIDDEN_IDS, f"Forbidden pack mod {metadata['id']} in {source}")
+            required = set(metadata.get("depends", {})) & (FORBIDDEN_IDS - {"e4steam"})
+            require(not required, f"Forbidden mod dependency {sorted(required)} in {source}")
+        for name in names:
+            lowered = name.casefold()
+            require("e4mc" not in lowered and lowered not in {
+                "de/hideandhunt/prelaunch.class", "de/hideandhunt/mixin/client/chatrelaymixin.class",
+            }, f"Retired relay entry {name} in {source}")
+            if lowered.endswith(".jar"):
+                verify_steam_jar(archive.read(name), source + "/" + name, depth + 1)
+
+
 def native_candidates(jars):
     candidates = {}
     for path, raw in jars.items():
+        verify_steam_jar(raw, path)
         for mod in read_mods(raw, Path(path).name, loader="fabric"):
             if mod["isLoadedMod"]:
                 candidates.setdefault((mod["id"], mod["version"]), (mod["name"], path))
@@ -207,10 +227,8 @@ def distribution_receipt(payload, inventory_raw):
         "schemaVersion": 1,
         "upstreamLockSha256": digest(read_file(ROOT / UPSTREAM_LOCK)),
         "overlayRecipeSha256": digest(read_file(ROOT / OVERLAY)),
-        "compatibilitySources": {
-            path: digest(read_file(ROOT / path))
-            for path in ("tools/prepare_26_3.py", "tools/prepare_e4mc_compat.py")
-        },
+        "retiredFilesSha256": digest(read_file(ROOT / RETIRED_FILES)),
+        "compatibilitySources": {"tools/prepare_26_3.py": digest(read_file(ROOT / "tools/prepare_26_3.py"))},
         "bridgeSourcesSha256": source_fingerprint(ROOT / "bridge"),
         "nativeInventorySha256": digest(inventory_raw),
         "files": files,
@@ -266,6 +284,11 @@ def library_bundle(payload, files, revision, work_root):
 
 def release_bytes(jars, revision, work_root):
     payload, inventory, files = release_inputs(jars)
+    retired = parse_json(read_file(ROOT / RETIRED_FILES))
+    require(isinstance(retired, list) and all(re.fullmatch(
+        r"(?:mods/[A-Za-z0-9.+-]+\.jar|launcher/notices/[A-Za-z0-9.+-]+\.txt)", item["path"])
+        for item in retired), "Invalid retired pack paths")
+    inventory_sha256(files + retired)
     contents = {}
     assets = []
 
@@ -289,7 +312,7 @@ def release_bytes(jars, revision, work_root):
         "schemaVersion": 2, "packId": "minecraft-11", "revision": revision,
         "minecraftVersion": PLATFORM["minecraftVersion"], "loader": PLATFORM["loader"],
         "modCount": len(inventory["mods"]), "requiredLauncherFeatures": [CAPABILITY],
-        "files": files, "assets": sorted(assets, key=lambda asset: asset["name"]),
+        "files": files, "legacyFiles": retired, "assets": sorted(assets, key=lambda asset: asset["name"]),
         "library": {"name": library_name, "revision": revision, **fingerprint(raw_library)},
     }
     require(parse_json(read_file(ROOT / "library/content.json"))["id"] == manifest["packId"],

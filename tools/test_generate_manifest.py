@@ -28,6 +28,14 @@ class ManifestTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Size/SHA256 mismatch"):
             manifest.check_pin(b"bad", manifest.fingerprint(b"jar"), "reviewed test asset")
 
+    def test_relay_is_rejected_even_as_an_undeclared_nested_jar(self):
+        raw = manifest.zip_root({
+            "fabric.mod.json": manifest.json_bytes({"id": "hideandhunt", "version": "next"}),
+            "META-INF/jars/transport.jar": tiny_jar("e4mc", "next"),
+        })
+        with self.assertRaisesRegex(ValueError, "Forbidden pack mod e4mc"):
+            manifest.native_candidates({"mods/author.jar": raw})
+
     def test_native_inventory_tracks_only_selected_author_versions(self):
         jars = {"mods/author.jar": tiny_jar("hideandhunt", "beta"),
                 "mods/other.jar": tiny_jar("hideandhunt", "alpha")}

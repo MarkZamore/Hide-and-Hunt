@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "pack": {
+    "id": "minecraft-11",
+    "relativePath": "Hide and Hunt",
+    "source": {"owner": "MarkZamore", "repo": "Hide-and-Hunt", "tag": "pack-latest"}
+  },
+  "runtime": {
+    "minecraftVersion": "26.3",
+    "loader": {"type": "fabric", "version": "0.20.1"}
+  },
+  "qa": {"heapMiB": 3072, "playerName": "HideHuntQA", "worldPrefix": "HideHuntQa"}
+}

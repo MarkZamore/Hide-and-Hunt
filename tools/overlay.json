@@ -5,17 +5,17 @@
     {
       "kind": "minecraft-26.3-renderer-handler-abi",
       "script": "tools/prepare_26_3.py",
-      "scope": "The author EntityRendererMixin and a downstream provenance notice"
+      "scope": "The author EntityRendererMixin in the selected Minecraft 26.3 component"
     },
     {
-      "kind": "pack-owned-fabric-companion",
+      "kind": "steam-only-author-archive",
+      "script": "tools/prepare_26_3.py",
+      "scope": "Ship only the 26.3 component, with no e4mc JAR, relay entrypoint or relay mixins"
+    },
+    {
+      "kind": "steam-only-hosting-and-discovery",
       "script": "bridge/build.py",
-      "scope": "Explicit e4mc opt-in and no UPnP fallback"
-    },
-    {
-      "kind": "e4mc-listener-coexistence",
-      "script": "tools/prepare_e4mc_compat.py",
-      "scope": "e4mc ban-command conflicts, owner-login bypass and experimental Dialtone resolution and login hooks"
+      "scope": "Remove relay and UPnP controls and hosting fallback, retain native publication and manual saved addresses"
     },
     {
       "kind": "bounded-network-exception-logging",

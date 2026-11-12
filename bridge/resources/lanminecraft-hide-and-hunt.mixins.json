@@ -4,5 +4,5 @@
   "package": "lanminecraft.hideandhunt.mixin",
   "compatibilityLevel": "JAVA_25",
   "plugin": "lanminecraft.hideandhunt.BridgePlugin",
-  "client": ["HostingMixin", "CreateWorldViewMixin", "HhMenuViewMixin", "ServerConnectionListenerMixin"]
+  "client": ["HostingMixin", "CreateWorldViewMixin", "HhMenuViewMixin"]
 }

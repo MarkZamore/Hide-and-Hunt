@@ -1,5 +1,4 @@
 {
-  "e4mc": "https://www.curseforge.com/minecraft/mc-mods/e4mc",
   "fabric-advancement-api-v1": "https://www.curseforge.com/minecraft/mc-mods/fabric-api",
   "fabric-api": "https://www.curseforge.com/minecraft/mc-mods/fabric-api",
   "fabric-api-base": "https://www.curseforge.com/minecraft/mc-mods/fabric-api",
@@ -45,8 +44,6 @@
   "fabric-tag-api-v1": "https://www.curseforge.com/minecraft/mc-mods/fabric-api",
   "fabric-transfer-api-v1": "https://www.curseforge.com/minecraft/mc-mods/fabric-api",
   "fabric-transitive-access-wideners-v1": "https://www.curseforge.com/minecraft/mc-mods/fabric-api",
-  "folk_sisby_kaleido-config": "https://github.com/sleepingdragoninn/kaleido-config",
   "hideandhunt": "https://modrinth.com/plugin/hide-and-hunt",
-  "hideandhunt_bundle": "https://modrinth.com/plugin/hide-and-hunt",
   "lanminecraft_hide_and_hunt_bridge": "https://github.com/MarkZamore/Hide-and-Hunt"
 }

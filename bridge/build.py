@@ -14,7 +14,7 @@ import zipfile
 
 HERE = Path(__file__).resolve().parent
 MAVEN = "https://maven.fabricmc.net/"
-JAR_NAME = "lanminecraft-hide-and-hunt-bridge-1.0.0.jar"
+JAR_NAME = "lanminecraft-hide-and-hunt-bridge-1.1.0.jar"
 
 
 def checked(payload, sha256, name):
@@ -59,7 +59,6 @@ def build(client, upstream, out, libraries_root):
     author = pins["upstream"]
     bundle = checked(upstream.read_bytes(), author["sha256"], upstream.name)
     mod = read_entry(bundle, author["entry"], author["entrySha256"])
-    relay = read_entry(mod, author["relayEntry"], author["relayEntrySha256"])
 
     java_home = os.environ.get("JAVA_HOME")
     if not java_home:
@@ -91,12 +90,10 @@ def build(client, upstream, out, libraries_root):
             "-cp", os.pathsep.join(map(str, test_classpath)), "-d", str(verify),
             str(HERE / "verify" / "ExactTargets.java"),
         ], check=True)
-        relay_jar = stage / "e4mc.jar"
-        relay_jar.write_bytes(relay)
         java = javac.with_name("java.exe" if os.name == "nt" else "java")
         subprocess.run([
             str(java), "-cp", os.pathsep.join(map(str, [verify, *test_classpath])),
-            "lanminecraft.hideandhunt.ExactTargets", str(author_jar), str(relay_jar),
+            "lanminecraft.hideandhunt.ExactTargets", str(author_jar),
         ], check=True)
 
         resources = HERE / "resources"

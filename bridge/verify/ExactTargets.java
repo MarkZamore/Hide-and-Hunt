@@ -1,15 +1,12 @@
 package lanminecraft.hideandhunt;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.ZipFile;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.analysis.Analyzer;
@@ -20,57 +17,26 @@ public final class ExactTargets {
     }
 
     public static void main(String[] args) throws Exception {
-        verifyRelayScope();
-        try (ZipFile author = new ZipFile(Path.of(args[0]).toFile());
-             ZipFile relay = new ZipFile(Path.of(args[1]).toFile())) {
+        try (ZipFile author = new ZipFile(Path.of(args[0]).toFile())) {
             verifyHosting(read(author, BridgePlugin.HOSTING));
             verifyMenu(read(author, BridgePlugin.MENU));
             verifyCreate(read(author, BridgePlugin.CREATE));
-            verifyListener(read(relay, BridgePlugin.E4MC_MIXIN.replace('.', '/')));
         }
-        System.out.println("Exact author bridge checks passed (no relay or Steam connection).");
-    }
-
-    private static void verifyRelayScope() throws InterruptedException {
-        require(!RelayPolicy.canHost(true), "default disabled");
-        require(!RelayPolicy.withOptIn(false, () -> RelayPolicy.canHost(true)), "unchecked host disabled");
-        require(RelayPolicy.withOptIn(true, () -> {
-            require(RelayPolicy.canHost(true), "checked host enabled");
-            require(!RelayPolicy.canHost(false), "e4mc config veto preserved");
-            require(!RelayPolicy.withOptIn(false, () -> RelayPolicy.canHost(true)), "nested opt-out preserved");
-            require(RelayPolicy.canHost(true), "outer opt-in restored");
-            AtomicBoolean otherThread = new AtomicBoolean(true);
-            Thread child = new Thread(() -> otherThread.set(RelayPolicy.canHost(true)));
-            child.start();
-            try {
-                child.join();
-            } catch (InterruptedException failure) {
-                Thread.currentThread().interrupt();
-                throw new AssertionError("test thread interrupted", failure);
-            }
-            require(!otherThread.get(), "unrelated listener cannot borrow opt-in");
-            return true;
-        }), "original publication result returned");
-        require(!RelayPolicy.canHost(true), "opt-in cleared after success");
-        require(!RelayPolicy.withOptIn(true, () -> false), "original failure result returned");
-        require(!RelayPolicy.canHost(true), "opt-in cleared after failure");
-        try {
-            RelayPolicy.withOptIn(true, () -> {
-                throw new IllegalArgumentException("simulated bind exception");
-            });
-            throw new AssertionError("expected the original exception");
-        } catch (IllegalArgumentException expected) {
-            require(!RelayPolicy.canHost(true), "opt-in cleared after exception");
-        }
+        System.out.println("Steam-only author bridge checks passed.");
     }
 
     private static void verifyHosting(ClassNode hosting) throws Exception {
         BridgePlugin.apply(hosting);
         MethodNode joined = method(hosting, "joined");
-        require(calls(joined, BridgePlugin.POLICY, "publish") == 1, "author host uses scope");
-        require(calls(joined, BridgePlugin.PENDING, "upnp") == 4, "choice preserved and UPnP flag replaced");
+        require(calls(joined, BridgePlugin.SERVER, "publishServer") == 1, "one native publication call site");
+        require(calls(joined, BridgePlugin.PENDING, "upnp") == 0, "old flags cannot select a relay");
+        require(calls(joined, BridgePlugin.HOSTING, "relayMod") == 0, "hosting has no relay branch");
         require(calls(joined, BridgePlugin.HOSTING, "lanAddress") == 0, "no automatic LAN address announcement");
-        require(calls(method(hosting, "start"), BridgePlugin.PENDING, "<init>") == 1, "saved world choice retained");
+        require(hasText(joined, "lanminecraft.hideandhunt.world.open"), "Steam success message retained");
+        require(calls(method(hosting, "start"), BridgePlugin.PENDING, "<init>") == 1, "saved world opens");
+        for (MethodNode method : hosting.methods) {
+            require(calls(method, "de/hideandhunt/client/host/Upnp", "open") == 0, "no router forwarding");
+        }
         verifyClass(hosting);
     }
 
@@ -80,39 +46,29 @@ public final class ExactTargets {
         require(calls(init, BridgePlugin.MENU, "refresh") == 1, "manual list refresh retained");
         require(init.instructions.size() == 3, "automatic LAN scan removed from author menu");
         require(calls(method(menu, "refresh"), BridgePlugin.HOSTING, "saved") == 1, "manual addresses loaded");
+        require(hasText(method(menu, "draw"), "lanminecraft.hideandhunt.world.steam")
+            && !hasText(method(menu, "draw"), "hh.mm.internet")
+            && !hasText(method(menu, "draw"), "hh.mm.lan"), "legacy flags do not change world labels");
         verifyClass(menu);
     }
 
     private static void verifyCreate(ClassNode create) throws Exception {
         BridgePlugin.apply(create);
+        require(create.methods.stream().noneMatch(method -> method.name.equals("toggle")), "toggle removed");
+        require(!hasText(method(create, "draw"), "hh.cw.upnp"), "toggle label removed");
+        require(calls(method(create, "draw"), "de/hideandhunt/client/ui/Widgets", "button") == 2, "form buttons retained");
+        require(calls(method(create, "click"), "de/hideandhunt/client/ui/Widgets", "click") == 1, "form input retained");
         require(calls(method(create, "create"), BridgePlugin.HOSTING, "create") == 1, "author world creation retained");
         verifyClass(create);
     }
 
-    private static void verifyListener(ClassNode relay) throws Exception {
-        ClassNode listener = new ClassNode();
-        listener.name = BridgePlugin.LISTENER;
-        MethodNode handler = relay.methods.stream()
-            .filter(method -> method.name.equals("interceptGroup") && method.desc.equals(BridgePlugin.E4MC_HANDLER))
-            .findFirst().orElseThrow();
-        listener.methods.add(handler);
-        try {
-            BridgePlugin.apply(listener);
-            throw new AssertionError("unattributed handler was accepted");
-        } catch (IllegalStateException expected) {
-            require(expected.getMessage().contains("merged e4mc listener handler"), "unattributed handler refused");
-        }
-        AnnotationNode merged = new AnnotationNode("Lorg/spongepowered/asm/mixin/transformer/meta/MixinMerged;");
-        merged.values = List.of("mixin", BridgePlugin.E4MC_MIXIN);
-        handler.visibleAnnotations = new ArrayList<>(List.of(merged));
-        BridgePlugin.apply(listener);
-        require(calls(handler, BridgePlugin.POLICY, "canHost") == 1, "e4mc handler checks opt-in");
-        for (var instruction : handler.instructions) {
-            if (instruction instanceof MethodInsnNode call && call.owner.equals(BridgePlugin.POLICY)) {
-                require(call.getNext().getOpcode() == Opcodes.IFEQ, "opt-out uses existing cleanup branch");
+    private static boolean hasText(MethodNode method, String text) {
+        for (var instruction : method.instructions) {
+            if (instruction instanceof LdcInsnNode constant && text.equals(constant.cst)) {
+                return true;
             }
         }
-        verifyClass(relay);
+        return false;
     }
 
     private static ClassNode read(ZipFile jar, String name) throws Exception {

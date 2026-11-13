@@ -1,5 +1,5 @@
 {
-  "bridgeSourcesSha256": "67c4420622969fc60e88da74e8961db688a8bf2766e33b63f8f50d5b2b186034",
+  "bridgeSourcesSha256": "3bd7ee64c1fd59e69ad3ef532b81282e154323a737667b3cd3784496c6d8fbb7",
   "compatibilitySources": {
     "tools/prepare_26_3.py": "88391652c4ee81a3a3f4b0937fd276cdae83e1089d95ca0c8f713ea07a697301"
   },
@@ -45,9 +45,9 @@
       "sizeBytes": 5595571
     },
     {
-      "path": "mods/lanminecraft-hide-and-hunt-bridge-1.1.0.jar",
-      "sha256": "b49b8bded08c0c3e2bb79749fa1eaddad2164aff873428928d4db8e933dcec5e",
-      "sizeBytes": 19421
+      "path": "mods/lanminecraft-hide-and-hunt-bridge-1.1.1.jar",
+      "sha256": "01190ce0ef738202ff962ea7c4c82f9f7c381799110eb843ed823c0ad9a798c0",
+      "sizeBytes": 19902
     },
     {
       "path": "portable-pack.json",
@@ -55,9 +55,9 @@
       "sizeBytes": 146
     }
   ],
-  "nativeInventorySha256": "40fb1db2073e1d539b6302aaffbe82a11d705d7c0a63c3fcc89d96304601bb34",
+  "nativeInventorySha256": "46d8d4940c7e5cdd9b0fe82e1ccdf4135cae912cc3021880042eb864c81b6b10",
   "overlayRecipeSha256": "aeecda4280167fa6e366b6548675e6290ff2f925a2fb1e3c2ba870429b753628",
-  "retiredFilesSha256": "32363dc98444ec36c7cb37cd8cbd3fc085c0875d038464d2a312fff96cae6a13",
+  "retiredFilesSha256": "8e7bb096acde1c129f81e4127d81d3137f9028b69e2a8f5b655db90640e532fd",
   "schemaVersion": 1,
   "upstreamLockSha256": "de58b9dada8fe5754e699162eac93fcdf02b194fdb564fe0a92005c19f734638"
 }

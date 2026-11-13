@@ -8,6 +8,9 @@ JAR. Сам игровой JAR готовит [`tools/prepare_26_3.py`](../tools
 ветки реле и UPnP после публикации. Ранее сохранённое значение флажка больше
 не влияет на публикацию. `Hosting.joined` вызывает штатный Minecraft API,
 через который e4steam получает событие об открытии мира.
+При открытии из меню Hide and Hunt мост передаёт сохранённое разрешение
+команд мира в штатный параметр доступа гостя. Список операторов и настройки
+мира мост не меняет.
 
 В меню Hide and Hunt остаются локальные миры и вручную сохранённые адреса.
 Автоматические Steam-миры видны в основном экране Minecraft «Сетевая игра».
@@ -19,7 +22,7 @@ JAR. Сам игровой JAR готовит [`tools/prepare_26_3.py`](../tools
 
 ```powershell
 $env:JAVA_HOME = 'C:\Tools\jdk-25.0.2'
-python -B bridge/build.py --client-jar <26.3.jar> --upstream <авторский.jar> --out <стенд>/lanminecraft-hide-and-hunt-bridge-1.1.0.jar
+python -B bridge/build.py --client-jar <26.3.jar> --upstream <авторский.jar> --out <стенд>/lanminecraft-hide-and-hunt-bridge-1.1.1.jar
 ```
 
 Параметр `--libraries-root` позволяет переиспользовать уже проверенный кеш

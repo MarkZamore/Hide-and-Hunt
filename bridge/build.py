@@ -14,7 +14,7 @@ import zipfile
 
 HERE = Path(__file__).resolve().parent
 MAVEN = "https://maven.fabricmc.net/"
-JAR_NAME = "lanminecraft-hide-and-hunt-bridge-1.1.0.jar"
+JAR_NAME = "lanminecraft-hide-and-hunt-bridge-1.1.1.jar"
 
 
 def checked(payload, sha256, name):

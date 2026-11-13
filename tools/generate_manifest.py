@@ -20,7 +20,7 @@ from public_server_policy import POLICY, inventory_sha256, verify as verify_serv
 
 ROOT = Path(__file__).resolve().parents[1]
 DESCRIPTOR = "portable-pack.json"
-BRIDGE = "mods/lanminecraft-hide-and-hunt-bridge-1.1.0.jar"
+BRIDGE = "mods/lanminecraft-hide-and-hunt-bridge-1.1.1.jar"
 BRIDGE_ID = "lanminecraft_hide_and_hunt_bridge"
 UPSTREAM_LOCK = "tools/upstream-lock.json"
 OVERLAY = "tools/overlay.json"
@@ -111,8 +111,8 @@ def source_inputs(upstream, bridge):
 
     with ZipFile(BytesIO(bridge)) as archive:
         metadata = parse_json(archive.read("fabric.mod.json"))
-    require((metadata.get("id"), metadata.get("version")) == (BRIDGE_ID, "1.1.0"),
-            "Expected the 1.1.0 pack-owned Hide and Hunt bridge")
+    require((metadata.get("id"), metadata.get("version")) == (BRIDGE_ID, "1.1.1"),
+            "Expected the 1.1.1 pack-owned Hide and Hunt bridge")
     return {"mods/" + OUTPUT_NAME: prepare_26_3(upstream), BRIDGE: bridge}
 
 

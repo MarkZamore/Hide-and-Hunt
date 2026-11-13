@@ -14,7 +14,7 @@ import struct
 import subprocess
 import sys
 from threading import Thread
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 from urllib.request import urlopen
 from uuid import UUID
 from zipfile import ZIP_DEFLATED, ZipFile

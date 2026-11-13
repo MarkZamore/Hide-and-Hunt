@@ -32,6 +32,7 @@ public final class BridgePlugin implements IMixinConfigPlugin {
     static final String MENU = "de/hideandhunt/client/screen/HhMenuView";
     static final String PUBLISH = "(Lnet/minecraft/server/MinecraftServer$MultiplayerScope;ZI)Z";
     static final String SERVER = "net/minecraft/client/server/IntegratedServer";
+    static final String WORLD_DATA = "net/minecraft/world/level/storage/WorldData";
     private static final String UPNP = "de/hideandhunt/client/host/Upnp";
     private static final String WIDGETS = "de/hideandhunt/client/ui/Widgets";
     private static final String DRAW = "(Lde/hideandhunt/client/ui/Canvas;IIF)V";
@@ -77,7 +78,21 @@ public final class BridgePlugin implements IMixinConfigPlugin {
 
     private static void patchHosting(ClassNode target) {
         MethodNode joined = method(target, "joined", "()V");
-        call(joined, Opcodes.INVOKEVIRTUAL, SERVER, "publishServer", PUBLISH);
+        MethodInsnNode publish = call(joined, Opcodes.INVOKEVIRTUAL, SERVER, "publishServer", PUBLISH);
+        AbstractInsnNode port = previous(previous(previous(previous(publish))));
+        AbstractInsnNode server = previous(previous(previous(port)));
+        AbstractInsnNode commands = previous(port);
+        if (!(server instanceof VarInsnNode local) || local.getOpcode() != Opcodes.ALOAD
+            || !(port instanceof VarInsnNode pending) || pending.getOpcode() != Opcodes.ALOAD
+            || !isCall(next(port), Opcodes.INVOKEVIRTUAL, PENDING, "port", "()I")
+            || commands.getOpcode() != Opcodes.ICONST_0) {
+            throw incompatible("unknown native publication arguments");
+        }
+        joined.instructions.insertBefore(commands, new VarInsnNode(Opcodes.ALOAD, local.var));
+        joined.instructions.insertBefore(commands, new MethodInsnNode(
+            Opcodes.INVOKEVIRTUAL, SERVER, "getWorldData", "()L" + WORLD_DATA + ";", false));
+        joined.instructions.set(commands, new MethodInsnNode(
+            Opcodes.INVOKEINTERFACE, WORLD_DATA, "isAllowCommands", "()Z", true));
         MethodInsnNode message = replaceText(joined, "hh.host.open", "world.open",
             "Deine Welt ist offen. Steam-Freunde finden sie im Mehrspielermenü.",
             "Your world is open. Steam friends can find it in Multiplayer.");

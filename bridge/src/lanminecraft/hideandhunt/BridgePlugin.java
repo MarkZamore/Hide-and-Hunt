@@ -17,6 +17,7 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.IincInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -93,6 +94,7 @@ public final class BridgePlugin implements IMixinConfigPlugin {
             Opcodes.INVOKEVIRTUAL, SERVER, "getWorldData", "()L" + WORLD_DATA + ";", false));
         joined.instructions.set(commands, new MethodInsnNode(
             Opcodes.INVOKEINTERFACE, WORLD_DATA, "isAllowCommands", "()Z", true));
+        removeAutomaticOwnerOp(target, joined);
         MethodInsnNode message = replaceText(joined, "hh.host.open", "world.open",
             "Deine Welt ist offen. Steam-Freunde finden sie im Mehrspielermenü.",
             "Your world is open. Steam friends can find it in Multiplayer.");
@@ -112,6 +114,27 @@ public final class BridgePlugin implements IMixinConfigPlugin {
         call(mapping, Opcodes.INVOKESTATIC, UPNP, "open", "(I)L" + UPNP + "$Mapping;");
         target.methods.remove(mapping);
         target.methods.remove(method(target, "lambda$joined$2", "(L" + UPNP + "$Mapping;I)V"));
+    }
+
+    private static void removeAutomaticOwnerOp(ClassNode target, MethodNode joined) {
+        String player = "net/minecraft/client/player/LocalPlayer";
+        MethodNode grant = method(target, "lambda$joined$0", "(L" + SERVER + ";L" + player + ";)V");
+        call(grant, Opcodes.INVOKEVIRTUAL, "net/minecraft/server/players/PlayerList",
+            "op", "(Lnet/minecraft/server/players/NameAndId;)V");
+        MethodInsnNode execute = call(joined, Opcodes.INVOKEVIRTUAL, SERVER, "execute", "(Ljava/lang/Runnable;)V");
+        AbstractInsnNode callback = previous(execute);
+        AbstractInsnNode nullCheck = previous(previous(previous(previous(callback))));
+        AbstractInsnNode loadPlayer = previous(previous(previous(previous(nullCheck))));
+        if (!(callback instanceof InvokeDynamicInsnNode factory)
+            || !factory.desc.equals("(L" + SERVER + ";L" + player + ";)Ljava/lang/Runnable;")
+            || !(next(loadPlayer) instanceof FieldInsnNode field) || !field.name.equals("player")
+            || !field.desc.equals("L" + player + ";")
+            || !(nullCheck instanceof JumpInsnNode skip)
+            || skip.getOpcode() != Opcodes.IFNULL || next(skip.label) != next(execute)) {
+            throw incompatible("unknown automatic owner OP block");
+        }
+        removeCode(joined, loadPlayer, next(execute));
+        target.methods.remove(grant);
     }
 
     private static void patchCreate(ClassNode target) {

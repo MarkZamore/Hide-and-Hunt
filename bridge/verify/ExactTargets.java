@@ -32,6 +32,9 @@ public final class ExactTargets {
         require(calls(joined, BridgePlugin.SERVER, "getWorldData") == 1
             && calls(joined, BridgePlugin.WORLD_DATA, "isAllowCommands") == 1,
             "native guest permission is read from the loaded world");
+        require(calls(joined, BridgePlugin.SERVER, "execute") == 0
+            && hosting.methods.stream().noneMatch(method -> method.name.equals("lambda$joined$0")),
+            "publication does not grant permanent OP to the owner");
         require(calls(joined, BridgePlugin.PENDING, "upnp") == 0, "old flags cannot select a relay");
         require(calls(joined, BridgePlugin.HOSTING, "relayMod") == 0, "hosting has no relay branch");
         require(calls(joined, BridgePlugin.HOSTING, "lanAddress") == 0, "no automatic LAN address announcement");

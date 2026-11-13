@@ -299,6 +299,6 @@
   "schemaVersion": 1,
   "sourceJars": {
     "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.2.jar": "d90bc63b99cebbbcd68c9892c726f7da23884b5587f8b70185064f0194e06368",
-    "mods/lanminecraft-hide-and-hunt-bridge-1.1.1.jar": "01190ce0ef738202ff962ea7c4c82f9f7c381799110eb843ed823c0ad9a798c0"
+    "mods/lanminecraft-hide-and-hunt-bridge-1.1.1.jar": "7ea89074dde4611f08f2405b522f7b789dde6a3dfcbbcd8f4b9b955b2595f6e5"
   }
 }

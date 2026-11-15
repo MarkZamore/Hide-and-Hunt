@@ -8,10 +8,10 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 PRESET = "launcher/controls-preset.txt"
 HUD = "hh.key.hud"
-LAYOUT = {HUD: "key.keyboard.j"}
 UNKNOWN = "key.keyboard.unknown"
 
-# Exact vanilla combinations confirmed in Minecraft 26.3.
+# Exact shared keys in the selected layout. H retains the author's HUD key
+# alongside Minecraft's F3+H debug action.
 SHARED_KEYS = {
     "key.mouse.middle": {"key.pickItem", "key.spectatorHotbar"},
     "key.keyboard.f3": {"key.debug.overlay", "key.debug.modifier"},
@@ -21,6 +21,7 @@ SHARED_KEYS = {
     "key.keyboard.a": {"key.left", "key.debug.reloadChunk"},
     "key.keyboard.d": {"key.right", "key.debug.clearChat"},
     "key.keyboard.g": {"key.quickActions", "key.debug.showChunkBorders"},
+    "key.keyboard.h": {HUD, "key.debug.showAdvancedTooltips"},
     "key.keyboard.l": {"key.advancements", "key.debug.profiling"},
     "key.keyboard.p": {"key.socialInteractions", "key.debug.focusPause"},
     "key.keyboard.s": {"key.back", "key.debug.dumpDynamicTextures"},
@@ -49,16 +50,15 @@ def render():
     defaults = mappings((HERE / "registered-keys.txt").read_text(encoding="utf-8"))
     if len(defaults) != 63 or defaults.get(HUD) != "key.keyboard.h":
         raise ValueError("Review the preset for the changed game key registry")
-    layout = defaults | LAYOUT
     by_key = {}
-    for name, key in layout.items():
+    for name, key in defaults.items():
         if key != UNKNOWN:
             by_key.setdefault(key, set()).add(name)
     overlaps = {key: names for key, names in by_key.items() if len(names) > 1}
     if overlaps != SHARED_KEYS:
         raise ValueError(f"Unexpected key overlaps: {overlaps}")
-    lines = ["# Hide and Hunt / Minecraft 26.3", "# J cycles the Hide and Hunt HUD size."]
-    lines.extend(f"key_{name}:{key}" for name, key in sorted(layout.items()))
+    lines = ["# Hide and Hunt / Minecraft 26.3", "# H cycles the Hide and Hunt HUD size."]
+    lines.extend(f"key_{name}:{key}" for name, key in sorted(defaults.items()))
     return ("\n".join(lines) + "\n").encode("utf-8")
 
 

@@ -12,8 +12,8 @@
 и их силу перед стартом раунда. Статистика привязана к UUID игрока и хранится
 в файле `hideandhunt/statistik.json` мира у хоста.
 
-Кнопка «Пресет управления» в LANMinecraft сохраняет базовые клавиши Minecraft
-и назначает **J** для изменения размера HUD Hide and Hunt.
+Кнопка «Пресет управления» в LANMinecraft предлагает раскладку с базовыми
+клавишами Minecraft и **H** для изменения размера HUD Hide and Hunt.
 Снимок назначений и порядок обновления описаны в
 [`tools/keybinds/design.md`](tools/keybinds/design.md).
 

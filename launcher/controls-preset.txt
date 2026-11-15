@@ -1,6 +1,6 @@
 # Hide and Hunt / Minecraft 26.3
-# J cycles the Hide and Hunt HUD size.
-key_hh.key.hud:key.keyboard.j
+# H cycles the Hide and Hunt HUD size.
+key_hh.key.hud:key.keyboard.h
 key_key.advancements:key.keyboard.l
 key_key.attack:key.mouse.left
 key_key.back:key.keyboard.s

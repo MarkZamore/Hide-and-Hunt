@@ -10,6 +10,11 @@
       "sizeBytes": 1583
     },
     {
+      "path": "launcher/controls-preset.txt",
+      "sha256": "225f0472dddb1423d54ac209c2a6755f85029a745ee6e2887cc9b3176eceaf1b",
+      "sizeBytes": 2453
+    },
+    {
       "path": "launcher/jvm-args.txt",
       "sha256": "a1f3a734e672681e16e8db9a35ece57236720f99f95a85bac9eb2caac1e19d3c",
       "sizeBytes": 44

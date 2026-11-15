@@ -13,6 +13,7 @@ from tempfile import TemporaryDirectory
 from zipfile import ZIP_STORED, BadZipFile, ZipFile, ZipInfo
 
 import network_logging_policy
+from keybinds.build_preset import PRESET, render as render_controls_preset
 from pack_library import build_library, read_mods
 from prepare_26_3 import OUTPUT_NAME, build as prepare_26_3
 from public_server_policy import POLICY, inventory_sha256, verify as verify_server_policy
@@ -119,6 +120,10 @@ def source_inputs(upstream, bridge):
 def all_payload(jars):
     network_logging_policy.verify(ROOT)
     payload = {path: read_file(ROOT / source) for path, source in AUTHORED_FILES.items()}
+    preset = ROOT / PRESET
+    if preset.exists():
+        payload[PRESET] = read_file(preset)
+        require(payload[PRESET] == render_controls_preset(), "Controls preset differs from the reviewed layout")
     require(parse_json(payload[DESCRIPTOR]) == PLATFORM, "Unexpected pack runtime descriptor")
     return dict(sorted((payload | jars).items()))
 

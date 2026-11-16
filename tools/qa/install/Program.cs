@@ -53,16 +53,21 @@ static async Task VerifyInstallationAsync(string install, string manifestPath, b
     using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(3));
     using var instances = new PackInstanceService(paths, logger);
     JsonElement[] retired = migrate ? manifest.RootElement.GetProperty("legacyFiles").EnumerateArray().ToArray() : [];
+    var retiredVerified = 0;
     var personal = new Dictionary<string, byte[]>();
     if (migrate)
     {
         var previous = await instances.PrepareAsync(name, timeout.Token);
         foreach (var file in retired)
         {
+            var relative = file.GetProperty("path").GetString()!;
+            if (!File.Exists(Path.Combine(canonical, relative))) continue;
             VerifyFile(canonical, file);
-            if (file.GetProperty("path").GetString()!.StartsWith("mods/", StringComparison.Ordinal))
+            if (relative.StartsWith("mods/", StringComparison.Ordinal))
                 VerifyFile(previous.GameDirectory, file);
+            retiredVerified++;
         }
+        Require(retiredVerified > 0, "The previous QA install must contain a version retired by the update.");
         foreach (var (relative, markerContent) in new (string Path, string Content)[]
         {
             ("options.txt", "fov:0.25\n"),
@@ -110,7 +115,7 @@ static async Task VerifyInstallationAsync(string install, string manifestPath, b
     Console.WriteLine(JsonSerializer.Serialize(new
     {
         revision, files = files.Length, installed.BytesDownloaded, installed = installed.Outcome.ToString(),
-        repeated = repeated.Outcome.ToString(), retiredVerified = retired.Length, personalFilesPreserved = personal.Count
+        repeated = repeated.Outcome.ToString(), retiredVerified, personalFilesPreserved = personal.Count
     }));
 }
 

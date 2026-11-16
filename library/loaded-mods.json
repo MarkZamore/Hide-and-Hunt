@@ -291,14 +291,14 @@
     {
       "id": "lanminecraft_hide_and_hunt_bridge",
       "name": "LANMinecraft Hide and Hunt bridge",
-      "source": "mods/lanminecraft-hide-and-hunt-bridge-1.1.1.jar",
-      "version": "1.1.1"
+      "source": "mods/lanminecraft-hide-and-hunt-bridge-1.1.2.jar",
+      "version": "1.1.2"
     }
   ],
-  "observationSha256": "665fbf22d11b38243dff94ce287921a02be7c2f748e02d3a887748270a0eb217",
+  "observationSha256": "d758452bfc9e862babc2744600ed60ededcec4f858a7b214bda4616e6fbdc138",
   "schemaVersion": 1,
   "sourceJars": {
     "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.2.jar": "d90bc63b99cebbbcd68c9892c726f7da23884b5587f8b70185064f0194e06368",
-    "mods/lanminecraft-hide-and-hunt-bridge-1.1.1.jar": "7ea89074dde4611f08f2405b522f7b789dde6a3dfcbbcd8f4b9b955b2595f6e5"
+    "mods/lanminecraft-hide-and-hunt-bridge-1.1.2.jar": "f519b145fa7a2c005e16c6b7e08345414671428346996e0efee43df7a1118a7b"
   }
 }

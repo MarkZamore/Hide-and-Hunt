@@ -1,0 +1,7 @@
+{
+  "required": true,
+  "minVersion": "0.8.7",
+  "package": "lanminecraft.hideandhunt.multiplayer",
+  "compatibilityLevel": "JAVA_25",
+  "client": ["MultiplayerWarningMixin"]
+}

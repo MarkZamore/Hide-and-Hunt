@@ -48,5 +48,10 @@
     "path": "mods/lanminecraft-hide-and-hunt-bridge-1.1.0.jar",
     "sha256": "b49b8bded08c0c3e2bb79749fa1eaddad2164aff873428928d4db8e933dcec5e",
     "sizeBytes": 19421
+  },
+  {
+    "path": "mods/lanminecraft-hide-and-hunt-bridge-1.1.1.jar",
+    "sha256": "7ea89074dde4611f08f2405b522f7b789dde6a3dfcbbcd8f4b9b955b2595f6e5",
+    "sizeBytes": 20836
   }
 ]

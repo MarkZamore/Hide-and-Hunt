@@ -30,6 +30,14 @@ loopback PNG are enabled when production adapter options are present.
 Record the nickname in game, the skin download and any visual evidence
 separately from the Java preflight. Mark real Steam sessions as `NOT RUN`.
 
+For a multiplayer warning change, open **Multiplayer** from the title screen
+on an isolated profile with no `options.txt`. For the upgrade check, use a
+profile that opened the warning with the previous bridge, set distinct gameplay
+options, and leave `skipMultiplayerWarning:false`. Replace the old bridge with
+the candidate. Verify that the same button opens the server list and the
+options are still present. The title button must stay disabled when Minecraft
+reports that the account cannot play multiplayer.
+
 Exit Minecraft through its menu. Keep the compact verification report and
 approved preview, then remove owned fixture files and rerun the workspace
 storage check.

@@ -23,6 +23,12 @@ ROOT = Path(__file__).resolve().parents[1]
 DESCRIPTOR = "portable-pack.json"
 BRIDGE = "mods/lanminecraft-hide-and-hunt-bridge-1.1.2.jar"
 BRIDGE_ID = "lanminecraft_hide_and_hunt_bridge"
+WARNING_CONFIG = "lanminecraft-hide-and-hunt.multiplayer.mixins.json"
+WARNING_CLASS = "lanminecraft/hideandhunt/multiplayer/MultiplayerWarningMixin.class"
+# Reviewed Java 25 bytecode: the title button's one GETFIELD is redirected to
+# a method that only returns true. Refresh this pin only after reviewing a
+# changed client target or compiler output.
+WARNING_CLASS_SHA256 = "df2557d1b8ff3f7a9dda38b43ed2ad96af18a215b35c409c5d0c41b0c18370d2"
 UPSTREAM_LOCK = "tools/upstream-lock.json"
 OVERLAY = "tools/overlay.json"
 INVENTORY = "library/loaded-mods.json"
@@ -114,7 +120,29 @@ def source_inputs(upstream, bridge):
         metadata = parse_json(archive.read("fabric.mod.json"))
     require((metadata.get("id"), metadata.get("version")) == (BRIDGE_ID, "1.1.2"),
             "Expected the 1.1.2 pack-owned Hide and Hunt bridge")
+    verify_multiplayer_warning(bridge)
     return {"mods/" + OUTPUT_NAME: prepare_26_3(upstream), BRIDGE: bridge}
+
+
+def verify_multiplayer_warning(bridge):
+    with ZipFile(BytesIO(bridge)) as jar:
+        names = jar.namelist()
+        require(all(names.count(path) == 1 for path in ("fabric.mod.json", WARNING_CONFIG, WARNING_CLASS)),
+                "Expected one multiplayer warning override in the packaged bridge")
+        metadata = parse_json(jar.read("fabric.mod.json"))
+        mixins = metadata.get("mixins")
+        require(metadata.get("environment") == "client" and isinstance(mixins, list)
+                and mixins.count(WARNING_CONFIG) == 1, "The multiplayer warning override must load on the client")
+        config = parse_json(jar.read(WARNING_CONFIG))
+        require(config == {
+            "required": True,
+            "minVersion": "0.8.7",
+            "package": "lanminecraft.hideandhunt.multiplayer",
+            "compatibilityLevel": "JAVA_25",
+            "client": ["MultiplayerWarningMixin"],
+        }, "The required multiplayer warning override configuration has changed")
+        require(digest(jar.read(WARNING_CLASS)) == WARNING_CLASS_SHA256,
+                "The reviewed multiplayer warning override bytecode has changed")
 
 
 def all_payload(jars):

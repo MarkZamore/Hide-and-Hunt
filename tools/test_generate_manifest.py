@@ -15,6 +15,33 @@ def tiny_jar(mod_id, version):
 
 
 class ManifestTests(unittest.TestCase):
+    def test_warning_override_must_load_with_the_reviewed_bytecode(self):
+        code = b"reviewed implementation"
+        files = {
+            "fabric.mod.json": manifest.json_bytes({
+                "environment": "client", "mixins": [manifest.WARNING_CONFIG],
+            }),
+            manifest.WARNING_CONFIG: manifest.json_bytes({
+                "required": True, "minVersion": "0.8.7",
+                "package": "lanminecraft.hideandhunt.multiplayer",
+                "compatibilityLevel": "JAVA_25", "client": ["MultiplayerWarningMixin"],
+            }),
+            manifest.WARNING_CLASS: code,
+        }
+        with patch.object(manifest, "WARNING_CLASS_SHA256", manifest.digest(code)):
+            manifest.verify_multiplayer_warning(manifest.zip_root(files))
+            variants = (
+                ({key: value for key, value in files.items() if key != manifest.WARNING_CLASS}, "Expected one"),
+                (files | {"fabric.mod.json": manifest.json_bytes({"environment": "client", "mixins": []})},
+                 "must load on the client"),
+                (files | {manifest.WARNING_CONFIG: manifest.json_bytes({"required": False})},
+                 "configuration has changed"),
+                (files | {manifest.WARNING_CLASS: b"returns false"}, "bytecode has changed"),
+            )
+            for modified, error in variants:
+                with self.subTest(error=error), self.assertRaisesRegex(ValueError, error):
+                    manifest.verify_multiplayer_warning(manifest.zip_root(modified))
+
     def test_asset_zip_is_ordinal_and_byte_stable(self):
         first = manifest.zip_root({"launcher/z.txt": b"z", "launcher/a.txt": b"a"})
         second = manifest.zip_root({"launcher/a.txt": b"a", "launcher/z.txt": b"z"})

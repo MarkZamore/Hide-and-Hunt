@@ -18,6 +18,11 @@
       "scope": "Remove relay and UPnP controls and hosting fallback, retain native publication and manual saved addresses"
     },
     {
+      "kind": "skip-third-party-server-warning",
+      "script": "bridge/build.py",
+      "scope": "Keep the Minecraft 26.3 title menu on the native skipMultiplayerWarning=true branch without writing player options"
+    },
+    {
       "kind": "bounded-network-exception-logging",
       "receipt": "tools/network-logging-policy.json",
       "scope": "The pack-owned Log4j config and its JVM selector"

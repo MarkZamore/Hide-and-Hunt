@@ -1,5 +1,6 @@
 {
   "policy": "steam-only-automatic-server-list-v1",
-  "reviewedInventorySha256": "f9f46597087a33a9d3750d55ca743bed88f1ca6ecca5dbd955b771b9ef587c64",
-  "schemaVersion": 1
+  "reviewedInventorySha256": "8b2f41c8a29f13112092567273167026fb87396b2fa964482a7894e93db58778",
+  "schemaVersion": 1,
+  "reviewUpdateReason": "Reviewed only the experimental confirmation agent and its JVM/ownership selector. The agent contains no server-list seeding or menu/network code. Every other delivered file hash is identical."
 }

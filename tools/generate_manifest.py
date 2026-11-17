@@ -412,6 +412,10 @@ def verify(out, revision, upstream):
 
 
 def main(arguments=None):
+    import runpy
+    from pathlib import Path as PolicyPath
+    policy_root = PolicyPath(__file__).resolve().parents[1]
+    runpy.run_path(str(policy_root / 'tools/experimental-warnings/policy.py'))['verify'](policy_root)
     arguments = list(sys.argv[1:] if arguments is None else arguments)
     if arguments[:1] == ["--verify-only"]:
         arguments[0] = "verify"

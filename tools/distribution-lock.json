@@ -5,6 +5,11 @@
   },
   "files": [
     {
+      "path": "config/lanminecraft/experimental-world-confirmation.jar",
+      "sizeBytes": 385299,
+      "sha256": "6db006392ebcfa6ce3cb5d21da8c8772eacfa388052e6e97bd5dd925734dd8bc"
+    },
+    {
       "path": "config/log4j2.xml",
       "sha256": "76f35ae63dad7119f3b896ae336c516d4edc08dffdc6de82986c165baee7a350",
       "sizeBytes": 1583
@@ -16,8 +21,8 @@
     },
     {
       "path": "launcher/jvm-args.txt",
-      "sha256": "a1f3a734e672681e16e8db9a35ece57236720f99f95a85bac9eb2caac1e19d3c",
-      "sizeBytes": 44
+      "sha256": "6d1dd3ea430f376463bda0836f9b2cdcb5ee6d032c17b1fdf9100b647d5323d2",
+      "sizeBytes": 111
     },
     {
       "path": "launcher/notices/Fabric-API-Apache-2.0.txt",
@@ -41,8 +46,8 @@
     },
     {
       "path": "launcher/pack-owned.txt",
-      "sha256": "20b244ac6cfb89d344b37b9ac4d077bd368f5f0ac391541801d06b22464313b5",
-      "sizeBytes": 18
+      "sha256": "dd4c7bfc687685252efbd35febc1237dde90e3b8055b380da9b89c181316763d",
+      "sizeBytes": 74
     },
     {
       "path": "mods/HideAndHunt-Fabric-1.0.0-beta.2+26.3-lanmc.2.jar",

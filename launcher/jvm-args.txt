@@ -1,1 +1,2 @@
 -Dlog4j.configurationFile=config/log4j2.xml
+-javaagent:config/lanminecraft/experimental-world-confirmation.jar
